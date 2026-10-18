@@ -1,9 +1,9 @@
 ---
-name: vst-plugin-builder
+name: vst-maker
 description: Use when designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controller plugins) in C++/JUCE for VST3 on Linux, macOS and Windows. Covers realtime safety, parameters, CPU/RAM/GPU/latency, sound quality, instrument, filter, FX and preset design, UI standards, offline installers and manuals, signing, testing and security.
 ---
 
-# VST plugin builder
+# VST Maker
 
 Unofficial community skill. Not made or endorsed by any plugin, synth or framework vendor named here.
 
@@ -56,6 +56,8 @@ Instead:
 - Read values once per block into locals unless the value is smoothed per sample.
 - Give every parameter a stable string ID. Never rename or reorder IDs after release: it breaks saved projects and automation. Add new parameters with new IDs and keep a state version number.
 - Validate everything loaded from state or presets: clamp ranges, ignore unknown keys, never trust sizes or counts.
+- Keep the processor (DSP and state) strictly separate from the editor (UI). The processor must run perfectly with the editor window closed. VST3 itself splits a plug-in into a processor and a controller (V: Steinberg VST 3 tutorial, "Code your first plug-in").
+- VST3 facts worth knowing even when JUCE wraps them (V: same tutorial): parameters are always normalized to 0.0 to 1.0; set the automatable flag so hosts can automate; one processing block can contain more than one change for the same parameter, so a hand-written processor must handle the queue correctly (the tutorial applies only the last change, which is a simplification); if the input is silent, set and honour the silence flags and clear the output buffers; reject unsupported bus layouts instead of guessing; when there are no inputs or no samples, still apply pending parameter changes.
 
 ## 4. Performance: CPU, RAM, GPU
 
@@ -157,6 +159,8 @@ Gain staging and DC
 - Denormals: render silence after a loud note and watch CPU.
 - State: save, reload, and compare parameters. Test automation and random parameter changes.
 - Run `pluginval` in CI (V: Tracktion pluginval README): `pluginval --strictness-level 5 <plugin>`; level 5 is described as the lowest generally recognised for host compatibility; exit code 0 means pass, 1 means fail; formats VST, AU, VST3; macOS, Windows, Linux.
+- Other validators named by experienced developers (V: JUCE forum thread "Development cycle of a audio plugin", 2023, forum not official): Apple's auval for AU, the Steinberg VST3 validator, and AVID's DSH tool for AAX. Also A/B null testing with a scriptable host, and Ryan Avery's ADC'17 talk "Test-driven development for audio plugins".
+- Wire pluginval and the DSP unit tests into CTest or CI so they run on every change. A CI machine is also where code signing, notarisation and installer building belong.
 - Test in real hosts on each OS (for example Bitwig, Reaper, Ardour on Linux), including a sandboxed Flatpak host.
 - Use sanitizers (AddressSanitizer, UndefinedBehaviorSanitizer, ThreadSanitizer) in debug builds.
 
@@ -209,8 +213,35 @@ Every release is one zip containing: an installer for each platform, a short PDF
 - [ ] Offline installer per OS, manual PDF, install instructions, checksums, LICENSE
 - [ ] Licence of every dependency checked, JUCE licence choice stated
 
+## 16. Development workflow and learning resources
+
+Fast iteration (V: JUCE forum thread "Development cycle of a audio plugin", 2023; these are experienced developers' practices, not official rules):
+- Do not reload the plugin into a DAW by hand after every change. Configure the IDE to launch the host with a saved project that already contains the plugin, then debug normally. Attach the debugger to the host or validator process to hit breakpoints in the plugin; some hosts do not allow attaching.
+- Use the standalone build or JUCE's AudioPluginHost for most DSP and UI work, and unit tests for DSP. Standalone lacks sidechain inputs, a playhead and effect-chain setups, so test automation, offline rendering, bus layouts and sidechains in a real host before release.
+- A user reported that Bitwig's plugin sandboxing allows near hot-swapping of builds (single report, check yourself).
+
+Avoid these claims even when they appear in popular advice (checked while writing this skill):
+- "Add a tiny offset like 1e-30f or use fast-math to flush denormals." Prefer `juce::ScopedNoDenormals`; fast-math flags change floating-point semantics for the whole program and can break NaN and infinity checks. Do not quote CPU-spike multipliers without measuring.
+- Beginner posts that say plugins are written in C# or Objective-C. JUCE is C++.
+
+Frameworks besides JUCE named in forum threads: iPlug2, NIH-plug (Rust), Faust (functional DSP prototyping), HISE (built on JUCE), JSFX for prototyping inside Reaper. Check licence and format support of each before choosing. For a synth or an effect where the user wants VST3 on three desktop systems, JUCE is a sound default.
+
+Reading list for DSP and plugin design (recommendations from the forum threads and a learning-path page, treat as opinion; the third item is a free web book):
+- Will Pirkle, books on designing audio effect plugins and software synthesizer plug-ins in C++.
+- Udo Zölzer, DAFX.
+- Richard Lyons, Understanding Digital Signal Processing.
+- Steven Smith, The Scientist and Engineer's Guide to Digital Signal Processing (free online).
+- Vadim Zavalishin, The Art of VA Filter Design (free from Native Instruments).
+- A suggested learning order: audio basics, C++ in the JUCE context, enough maths for filters, DSP fundamentals (FFT, filters, delays, nonlinear effects), then the framework.
+- Real code to study: open-source synths and effects on GitHub. Read their licence first; copying code from a copyleft project into a project with a different licence is not allowed.
+
+Architecture tip from a commercial developer interview: separate code into DSP, view and controller layers, and use assertions so errors break early; most bugs come from data exchange between threads.
+
 ## Sources
 
+- JUCE forum, "Development cycle of a audio plugin": https://forum.juce.com/t/development-cycle-of-a-audio-plugin/57180
+- Steinberg VST 3 Developer Portal, "Code your first plug-in": https://steinbergmedia.github.io/vst3_dev_portal/pages/Tutorials/Code+your+first+plug-in.html
+- Lars Lentz Audio, "Creating and Programming Synths, Samplers, and VSTs": https://larslentzaudio.com/2020/05/03/creating-and-programming-synths-samplers-and-vsts/
 - JUCE AudioProcessor docs: https://docs.juce.com/master/classAudioProcessor.html
 - JUCE forum threads on licensing and ScopedNoDenormals (forum, not official)
 - Steinberg VST 3 Developer Portal, Plug-in Locations: https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html

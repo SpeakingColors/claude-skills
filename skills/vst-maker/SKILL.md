@@ -59,6 +59,17 @@ Instead:
 - Keep the processor (DSP and state) strictly separate from the editor (UI). The processor must run perfectly with the editor window closed. VST3 itself splits a plug-in into a processor and a controller (V: Steinberg VST 3 tutorial, "Code your first plug-in").
 - VST3 facts worth knowing even when JUCE wraps them (V: same tutorial): parameters are always normalized to 0.0 to 1.0; set the automatable flag so hosts can automate; one processing block can contain more than one change for the same parameter, so a hand-written processor must handle the queue correctly (the tutorial applies only the last change, which is a simplification); if the input is silent, set and honour the silence flags and clear the output buffers; reject unsupported bus layouts instead of guessing; when there are no inputs or no samples, still apply pending parameter changes.
 
+More VST3 architecture facts (V: Steinberg VST 3 Developer Portal, API documentation):
+- The processor must work with no controller loaded, so DSP state never depends on the editor.
+- `process()` and `setProcessing()` may run on the audio thread: no allocation. Initialize and terminate run on the UI thread.
+- Bus and speaker arrangements can change only while the plug-in is inactive. Provide buffers for all busses, even inactive ones. Input and output buffers may share memory, so do not blindly clear outputs.
+- Notes arrive as events in `process()`. Parameter changes arrive sample-accurately through parameter queues. Tempo and transport arrive in the process context.
+- GUI-to-host edits use beginEdit, performEdit, endEdit in that order, on the UI thread only.
+- On state restore the processor is restored first; the controller then receives the component state and must not fire handler callbacks.
+- Do not send private processor-to-controller messages from `process()`; use the UI thread or the Data Exchange API.
+- Units group parameters; the MIDI mapping interface maps MIDI CCs to parameters.
+- Portal pages to read when needed: Parameters and Automation, Workflow Diagrams, Multiple Dynamic IO (sidechain), VST 3 Units, Data Exchange.
+
 ## 4. Performance: CPU, RAM, GPU
 
 - Measure before optimising (see 12).
@@ -106,6 +117,12 @@ Gain staging and DC
 - Unison: random or spread start phases, a detune spread curve, stereo spread, and a level compensation that does not grow with voice count.
 - Supersaw: the Roland JP-8000 Super Saw is described as resembling seven sawtooth oscillators detuned against each other (V: Wikipedia, Roland JP-8000). Detailed analyses exist: Adam Szabo, "How to Emulate the Super Saw" (KTH, 2010) and Alex Shore (2013), both cited on that page. Read them for detune curves and mixing instead of guessing numbers.
 - Drift and analog feel: slow random modulation of pitch and cutoff, per voice, small and uncorrelated.
+- Ideas seen in commercial supersaw synths, for study only; write your own code and design, never copy a product's code, look, name or presets (R, verify by ear and measurement):
+  - One slow LFO per oscillator, with frequencies spaced by irrational ratios such as the golden ratio, so the combined movement does not repeat audibly.
+  - One "drift" macro that scales detune and drift depth together, with fine controls on a second page.
+  - A keytracked high-pass as its own control (the JP-8000-style supersaw sound uses one).
+  - An optional 2x or 4x oversampled filter; report the oversampling latency to the host.
+  - Check dB scales on meters, per-voice stereo spread, and sidechain-capable effects: gaps some products leave that users notice.
 - MIDI: use the sample position of each MIDI event inside the block so notes start sample-accurately. Handle pitch bend (default range of two semitones, configurable), sustain pedal, all-notes-off, and note-off with release. Offer mono, legato and portamento if the instrument is lead or bass oriented.
 - Wavetables: band-limit per octave or per pitch range; cross-fade between frames to avoid zipper noise; interpolate (linear is cheap, higher order costs CPU, measure the aliasing).
 
@@ -224,6 +241,14 @@ Avoid these claims even when they appear in popular advice (checked while writin
 - "Add a tiny offset like 1e-30f or use fast-math to flush denormals." Prefer `juce::ScopedNoDenormals`; fast-math flags change floating-point semantics for the whole program and can break NaN and infinity checks. Do not quote CPU-spike multipliers without measuring.
 - Beginner posts that say plugins are written in C# or Objective-C. JUCE is C++.
 
+JUCE DSP module (V: JUCE tutorial "Introduction to the DSP module"):
+- Each processor has `prepare(ProcessSpec)`, `process(context)` and `reset()`. ProcessSpec holds sample rate, maximum block size and channel count.
+- `juce::dsp::ProcessorChain<...>` runs processors in series; access members with `get<index>()` and name the indices with an enum.
+- Wrap an AudioBuffer in `dsp::AudioBlock`, slice with `getSubBlock()`, process with `ProcessContextReplacing`.
+- `dsp::Oscillator` takes a function and a lookup-table size. The tutorial oscillator is a plain table oscillator, not band-limited: for supersaws use PolyBLEP or mip-mapped wavetables and measure aliasing yourself (see 12).
+- `dsp::LadderFilter` is a Moog-style ladder (12 dB low-pass by default). Update low-rate LFOs every N samples outside the chain to save CPU.
+- The name is `juce::SmoothedValue` (not "SmoothValue" as some popular summaries write).
+
 Frameworks besides JUCE named in forum threads: iPlug2, NIH-plug (Rust), Faust (functional DSP prototyping), HISE (built on JUCE), JSFX for prototyping inside Reaper. Check licence and format support of each before choosing. For a synth or an effect where the user wants VST3 on three desktop systems, JUCE is a sound default.
 
 Reading list for DSP and plugin design (recommendations from the forum threads and a learning-path page, treat as opinion; the third item is a free web book):
@@ -243,6 +268,8 @@ Architecture tip from a commercial developer interview: separate code into DSP, 
 - Steinberg VST 3 Developer Portal, "Code your first plug-in": https://steinbergmedia.github.io/vst3_dev_portal/pages/Tutorials/Code+your+first+plug-in.html
 - Lars Lentz Audio, "Creating and Programming Synths, Samplers, and VSTs": https://larslentzaudio.com/2020/05/03/creating-and-programming-synths-samplers-and-vsts/
 - JUCE AudioProcessor docs: https://docs.juce.com/master/classAudioProcessor.html
+- JUCE tutorial, Introduction to the DSP module: https://juce.com/tutorials/tutorial_dsp_introduction/
+- Steinberg VST 3 Developer Portal, API documentation: https://steinbergmedia.github.io/vst3_dev_portal/
 - JUCE forum threads on licensing and ScopedNoDenormals (forum, not official)
 - Steinberg VST 3 Developer Portal, Plug-in Locations: https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Locations+Format/Plugin+Locations.html
 - Flathub LinuxAudio BaseExtension: https://github.com/flathub/org.freedesktop.LinuxAudio.BaseExtension

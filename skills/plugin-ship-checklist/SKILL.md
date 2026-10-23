@@ -86,6 +86,50 @@ Companion to `vst-maker`, `juce-expert` and `mockup-is-the-plugin`. Each item is
 - Sharing data between plugin instances in one host (shared memory or a process-wide singleton) is UNVERIFIED: some hosts run plugins in separate processes or sandboxes. Test in every host you claim to support before promising it. Report latency differences between tracks when comparing them.
 - A plugin can only analyse what the host sends it; it cannot capture other applications' audio.
 
+## 10. GitHub Actions for plugins (CI and releases)
+Patterns from real plugin repos (COMMUNITY) plus GitHub's own security guide (VERIFIED, docs.github.com secure-use page, read 2026-10-23) and the pluginval CI page (VERIFIED, github.com/Tracktion/pluginval docs "Adding pluginval to CI").
+
+**Two workflows**
+- `build.yml`: on push to main, pull requests and manual run. Matrix of `ubuntu-latest`, `windows-latest`, `macos-latest` with `fail-fast: false` so one OS failing does not hide the others. `defaults: run: shell: bash` makes scripts the same on all three.
+- `release.yml`: on a pushed tag `v*` and on manual run with a `tag` input. Jobs: manual (PDF), windows installer, macos package, linux native tarball, linux Flatpak extension, then one `package` job that depends on all of them, writes `SHA256SUMS`, zips, and publishes.
+- Manual runs without a tag only build and upload an artifact; publishing only happens when a tag exists.
+
+**Build steps**
+- Linux needs development packages before CMake (JUCE: ALSA, X11, Xinerama, Xext, Xrandr, Xcursor, Xcomposite, FreeType, fontconfig; see `juce-expert` section 3 for the official list). `apt-get update` first.
+- Configure and build with `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release` then `cmake --build build --config Release --parallel 4`.
+- macOS universal build: `-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"`. Sign ad hoc with `codesign --force --deep -s -` only as a stop-gap; real distribution needs a Developer ID and notarisation.
+- Upload `build/*_artefacts/` with `actions/upload-artifact`. Use `if-no-files-found: warn`.
+- Tee the build log to a file (`2>&1 | tee ci.log; exit ${PIPESTATUS[0]}`) and, on `if: always()`, push the last 400 lines to a `ci-log` branch. Useful when failed-step logs cannot be downloaded in your environment.
+- Cache the compiler (ccache) and CMake FetchContent downloads to speed up repeat builds. UNVERIFIED which cache keys work best for your project; measure.
+
+**Test steps**
+- Run your core unit tests (plain C++ without the plugin framework) with sanitizers before building the plugin.
+- Run pluginval on every built VST3. Verified flags: `--strictness-level 5` (the page says 5 is the default but recommends passing it explicitly), `--skip-gui-tests`, `--output-dir`, `--junit-xml <file>`, `--json-results <file>` (also settable with `JUNIT_XML` and `JSON_RESULTS` environment variables). A timeout or a crash of pluginval is reported as a single error entry. Official action: `Tracktion/pluginval/validate@v2` with `plugins:`, `strictness-level:` and `args:`. Upload the report with `if: always()`. Linux headless (xvfb) advice is not on that page: UNVERIFIED, test your runner.
+- Render the real editor headless and push PNGs to a `snapshots` branch (section 2).
+
+**Release steps**
+- Tag drives version (section 7). `gh release view "$TAG"` then `gh release upload "$TAG" "$ZIP" --clobber` if it exists, else `gh release create ... --prerelease`. Mark builds as test builds until they are checked on real machines.
+- Include the PDF manual, INSTALL.txt and SHA256SUMS in the zip; test the links after publishing.
+- Windows installer with Inno Setup (`iscc`; install with `choco install innosetup` if missing). macOS `pkgbuild` per component then `productbuild`. Linux: `flatpak-builder` with `--install-deps-from=flathub`.
+- The Flatpak step should fail the job if the extension contains no `.vst3`.
+
+**Security of the workflows (VERIFIED, GitHub secure-use guide)**
+- Default the `GITHUB_TOKEN` to read-only and raise permissions per job only where needed (a release job needs `contents: write`; a build job usually does not).
+- Do not store secrets in the workflow file. One secret per value; no JSON blobs; register derived values (such as a base64 certificate) as secrets too.
+- Never put untrusted text (PR titles, branch names, issue text) straight into a `run:` script. Pass it through an environment variable first.
+- Avoid `pull_request_target`; do not check out fork code in privileged workflows.
+- Pin third-party actions to a full-length commit SHA (verify the SHA is from the action's own repository), or use tags only for trusted creators such as GitHub's own. Audit what an action does with your token.
+- Do not use self-hosted runners on public repos.
+- Keep signing certificates and notarisation passwords in repository or environment secrets; give them only to the release job.
+
+**Common failures**
+- Linux job fails at configure: a missing `-dev` package.
+- Windows job cannot find a tool: install it with `choco` in the job.
+- A release rerun fails at the last step: use `--clobber` upload for an existing tag.
+- A push fails because another session pushed first: `git fetch` and rebase before pushing; a stale shallow clone can fail with HTTP 413.
+- Workflow changes pushed with a token that lacks workflow scope are rejected; push workflow files with an account or token allowed to change them. UNVERIFIED for your setup.
+- Dependabot for GitHub Actions can propose action updates automatically. UNVERIFIED here; check the Dependabot docs.
+
 ## 9. Final gate (tick all)
 - [ ] Old-state fixture loads; version number stored.
 - [ ] Real editor snapshot compared with the mockup.
@@ -93,5 +137,7 @@ Companion to `vst-maker`, `juce-expert` and `mockup-is-the-plugin`. Each item is
 - [ ] Resizing and HiDPI checked; choice controls tested at every item.
 - [ ] Alias, level-match and responsiveness tests pass (see `plugin-dsp-quality`).
 - [ ] Installer upgrades in place; uninstall works.
+- [ ] CI green on all three OS; pluginval run and report saved.
+- [ ] Workflow tokens least-privilege; third-party actions pinned.
 - [ ] Release created from the tag; links tested.
 - [ ] Manual matches this version.

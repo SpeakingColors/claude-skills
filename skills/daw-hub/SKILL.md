@@ -59,7 +59,10 @@ Music craft (app independent)
 - audio-driver-stacks: ASIO, WASAPI, Core Audio, ALSA, PipeWire side by side.
 - audio-interface-digital-io: interfaces, ADAT, clocking, RME Digiface USB.
 - wine-proton-bottles: Bottles, runners, wineasio, yabridge, backups.
-- vst-maker: building your own plugins (JUCE, VST3).
+- vst-maker: building your own plugins (design, sound quality, release).
+- juce-expert: JUCE specifics (CMake, realtime, parameters, testing, licence).
+- mockup-is-the-plugin: port an approved UI mockup faithfully.
+- hard-dance-production: mix, master and synth recipes for hardstyle, hardcore, trance.
 
 ## 5. Install order on Bazzite (generic, one step at a time)
 1. Update the system and reboot once (bazzite-kde-linux).

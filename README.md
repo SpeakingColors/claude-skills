@@ -1,7 +1,7 @@
 # claude-skills
 
 Free Claude skills for music makers, DJs and Linux users. One folder per skill under `skills/`.
-51 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
+54 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
 
 ## Skills
 
@@ -36,6 +36,8 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | Skill | What it does |
 |---|---|
 | [vst-maker](skills/vst-maker/SKILL.md) | Designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controllers) in C++/JUCE for VST3 on Linux, macOS and Windows, incl. realtime safety and installers. |
+| [juce-expert](skills/juce-expert/SKILL.md) | Developing JUCE audio plugins (VST3, AU, CLAP, standalone), covering CMake builds, realtime safety, parameters, state, GUI, testing and licensing. |
+| [mockup-is-the-plugin](skills/mockup-is-the-plugin/SKILL.md) | A plugin or app has an approved mockup and a real editor is being built, shown or released: the mockup and the product are one design, port it faithfully and test the backend separately. |
 | [korg-logue-sdk-expert](skills/korg-logue-sdk-expert/SKILL.md) | Writing, porting, debugging, building or loading custom oscillators, synths and effects (units) with the KORG logue SDK for minilogue xd, prologue, NTS-1, NTS-3, drumlogue or microKORG2. |
 | [hardware-protocol-capture](skills/hardware-protocol-capture/SKILL.md) | Documenting how a music hardware device is controlled over MIDI (CC, NRPN, SysEx) or USB so a controller, editor or librarian can be built, from official docs and own-device captures. |
 | [github-for-beginners](skills/github-for-beginners/SKILL.md) | The user is new to GitHub and needs to publish files, create a repository, upload a folder, make a release with downloads, choose a licence or remove private info from a public repo. |
@@ -50,6 +52,7 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | [wine-proton-bottles](skills/wine-proton-bottles/SKILL.md) | Running Windows music software or games on Bazzite or Linux with Bottles, Wine, Proton or ProtonPlus, covering prefixes, runners, dependencies, wineasio, yabridge, crashes and backups. |
 | [sound-engineer-acoustics](skills/sound-engineer-acoustics/SKILL.md) | Studio audio troubleshooting and room acoustics, covering routing problems, noise, latency, gain staging, monitor placement, room modes, treatment, measurement and listening position. |
 | [electronic-music-producer](skills/electronic-music-producer/SKILL.md) | Someone shares a melody, piano roll, MIDI or track idea, or asks about genre craft (chords, rhythm, sounds, arrangement, mix) for hard dance, trance, hardcore, DnB, house and other EDM. |
+| [hard-dance-production](skills/hard-dance-production/SKILL.md) | Mixing, mastering or sound designing hardstyle, UK and happy hardcore, trance and rave: frequency plan, buses, master chain, build-ups, lead, bass, pluck and FX recipes with starting values. |
 | [av-receiver-specialist](skills/av-receiver-specialist/SKILL.md) | Choosing, connecting, calibrating or troubleshooting an AV receiver (Yamaha, Sony, Denon, Marantz, Onkyo, Pioneer), HDMI ARC/eARC/CEC, speakers and wire, or explaining AV terms plainly. |
 
 ### DJ

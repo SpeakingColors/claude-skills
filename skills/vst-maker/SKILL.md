@@ -5,6 +5,8 @@ description: Use when designing, writing, reviewing, packaging or releasing audi
 
 # VST Maker
 
+Companions: `juce-expert` (JUCE details, builds, licence), `mockup-is-the-plugin` (UI port rule). Load them together for JUCE plugin work.
+
 Unofficial community skill. Not made or endorsed by any plugin, synth or framework vendor named here.
 
 How to read confidence tags:

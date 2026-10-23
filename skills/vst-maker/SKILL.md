@@ -5,7 +5,7 @@ description: Use when designing, writing, reviewing, packaging or releasing audi
 
 # VST Maker
 
-Companions: `juce-expert` (JUCE details, builds, licence), `mockup-is-the-plugin` (UI port rule). Load them together for JUCE plugin work.
+Companions: `juce-expert` (JUCE details, builds, licence), `mockup-is-the-plugin` (UI port rule). Load them together for JUCE plugin work. For GPU UI options (Visage), see juce-expert section 13c.
 
 Unofficial community skill. Not made or endorsed by any plugin, synth or framework vendor named here.
 

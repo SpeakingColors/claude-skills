@@ -1,6 +1,6 @@
 ---
 name: juce-expert
-description: Use when developing JUCE audio plugins (VST3, AU, CLAP, standalone), covering CMake builds, realtime safety, parameters, state, GUI, testing and licensing.
+description: Use when developing JUCE audio plugins (VST3, AU, CLAP), covering CMake, realtime safety, quality and CPU, parameters, state, GUI incl. Visage, testing and licensing.
 ---
 
 # JUCE expert
@@ -299,6 +299,23 @@ All items in this section are UNVERIFIED unless a source is given; the Apple pag
 - Silent plugin in a synth host: forgot `IS_SYNTH` or `NEEDS_MIDI_INPUT` (S2) or did not clear the buffer first.
 - Debugging tips (UNVERIFIED but standard): Debug build of the Standalone with a debugger; `jassert` for assumptions; do not use `DBG` in `processBlock`; reproduce host bugs with the smallest project.
 
+## 13b. Quality and performance checklist (JUCE plugins)
+Short list; the long version with sources is in `vst-maker` (sections 2, 4, 6, 12). Load both.
+- Sound: oversample or band-limit every non-linear stage and oscillator (see section 8), smooth every parameter, check for DC, NaN and clipping, test at 44.1, 48, 96 and 192 kHz.
+- CPU: no allocation, locks or file access in `processBlock` (section 5); precompute coefficients when a parameter changes, not per sample; use `ScopedNoDenormals`; measure with an offline render, not by feel.
+- Latency: report every delay with `setLatencySamples` and check in two hosts.
+- GUI cost: a busy editor must not steal audio time. Repaint only what changed, use timers at 30 to 60 Hz at most, never touch the audio thread from the editor.
+- Verify with pluginval (section 11) on every build, and keep a worst-case preset for CPU tests.
+
+## 13c. Visage (GPU UI library) with JUCE
+Idea: Visage is an alternative way to draw a plugin window with the GPU instead of JUCE's own Component painting. Treat it as an advanced option; JUCE's own GUI is the safe default.
+- What it is (VERIFIED, S35 github.com/VitalAudio/visage README): a GPU-accelerated cross-platform C++ library for native UI and 2D graphics, MIT licence. Backends: Direct3D11 on Windows, Metal on macOS, Vulkan on Linux, WebGL on web. Features listed: event and window normalisation, Unicode text entry, partial redraw of dirty regions, drawing at the monitor refresh rate, automatic shape batching, blend modes, shader transpilation, blur and bloom effects. Modules: visage_app, visage_graphics, visage_ui, visage_utils, visage_widgets, visage_windowing, visage_file_embed. Basic example: `visage::ApplicationWindow` with an `onDraw()` callback that receives a `visage::Canvas&`.
+- Origin (COMMUNITY, S36 forum.hise.audio post 97122): the VitalAudio organisation hosts it; developers say adopting it in a JUCE-based framework would be a large change.
+- Embedding in a JUCE plugin editor, focus and keyboard handling, destruction order, popups, Linux Vulkan package needs, and host quirks: UNVERIFIED here. The README does not cover plugin use. Before committing, build the repo's examples, then make a tiny test plugin and open it in two hosts on each OS you ship.
+- Risks to test (UNVERIFIED, general): extra GPU driver dependency on Linux (Vulkan), behaviour inside sandboxed hosts and Flatpak, window resizing and HiDPI, and keyboard focus inside the host window.
+- Plan: keep the audio and parameter code independent of the UI so the UI can change later. Prototype one control (a knob) first and compare CPU and idle GPU use against a plain JUCE editor.
+- Licence: MIT requires keeping the copyright notice with copies of the code; read the repo LICENSE file.
+
 ## 14. Not verified, and sources
 
 Not verified (do not state as fact; check first):
@@ -346,5 +363,7 @@ Sources fetched (research date 2026-10-23):
 - S31 https://github.com/sudara/pamplejuce (COMMUNITY)
 - S32 https://github.com/89luca89/distrobox (COMMUNITY)
 - S33 https://forum.juce.com/t/how-can-i-install-juce-in-linux-fedora/25304 (COMMUNITY)
+- S35 https://github.com/VitalAudio/visage (README, VERIFIED)
+- S36 https://forum.hise.audio/post/97122 (COMMUNITY)
 - S34 https://raw.githubusercontent.com/Tracktion/pluginval/develop/README.md
 - Blocked or empty (not used as facts): juce.com licence, licensing FAQ, tutorials and CMake tutorial pages; Steinberg VST3 portal locations page; Apple notarisation page (no body); Ross Bencina article.

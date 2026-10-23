@@ -315,6 +315,17 @@ Idea: Visage is an alternative way to draw a plugin window with the GPU instead 
 - Risks to test (UNVERIFIED, general): extra GPU driver dependency on Linux (Vulkan), behaviour inside sandboxed hosts and Flatpak, window resizing and HiDPI, and keyboard focus inside the host window.
 - Plan: keep the audio and parameter code independent of the UI so the UI can change later. Prototype one control (a knob) first and compare CPU and idle GPU use against a plain JUCE editor.
 - Licence: MIT requires keeping the copyright notice with copies of the code; read the repo LICENSE file.
+- Third-party integration notes for macOS and iOS (COMMUNITY, from a published JUCE+Visage guide; not tested here, treat as leads). JUCE owns the plugin window; Visage runs its own Metal render loop in an embedded view, so mouse, keyboard, clipboard, cursor, focus and resize events must be bridged by hand. Patterns reported: create the Visage window late (start a short timer in the editor constructor and build only once the component is showing, has a native peer and non-zero size); set child bounds in a layout function that runs on every resize, not at creation, because DPI may still read 1.0 then; on destruction stop the render loop first, then destroy overlays, panels and frames, disconnect the bridge, and free the bridge last (the display link holds raw pointers and can fire at 60 to 120 Hz); map Cmd to the right modifier and give the key-combo shortcuts explicit key codes; toggle keyboard focus only while a text field is active; render popups and modals inside the GPU layer instead of using native JUCE popups; on iOS let the GPU view handle touches and do not forward JUCE mouse events (double events), respect safe-area insets, keep touch targets at least 44 pt. Keep a per-project notes file (patches applied, destruction order, popup list, known issues).
+- Template idea (COMMUNITY): a starter repo with placeholder names, fixed plugin codes, a settings file for developer identity and signing values (never commit the secret ones), CMake FetchContent for JUCE and CLAP extensions, and an optional GPU-UI switch. Writing your own template once saves repeating the setup in section 3.
+
+## 13d. Extra JUCE habits (from a best-practice guide with no licence found; ideas rewritten, none copied)
+- Cross-thread: simple values travel by atomics; audio-to-UI events by `AsyncUpdater` or a FIFO read from an editor timer; never call `repaint()` or any editor method from `processBlock`.
+- Always do setup in `prepareToPlay` from the real sample rate (no hard-coded 44100) and call the base class method if you override one that has a base implementation.
+- Version the state and migrate old versions in `setStateInformation` (section 7).
+- Hoist per-sample maths (coefficients, `exp`, `pow`) out of the loop; recompute only when a parameter changes.
+- SIMD: `dsp::SIMDRegister` exists for hand vectorising; measure before using it, and prefer `FloatVectorOperations` and compiler auto-vectorisation first (UNVERIFIED, not benchmarked here).
+- Denormals: use `ScopedNoDenormals` (section 5). Adding a tiny constant such as 1e-20 in feedback loops is a common alternative, but it adds a DC offset; prefer the scope guard.
+- Disabling C++ exceptions for audio code is sometimes advised; JUCE and the standard library may still throw elsewhere, so just never let an exception cross `processBlock` (UNVERIFIED for your build).
 
 ## 14. Not verified, and sources
 

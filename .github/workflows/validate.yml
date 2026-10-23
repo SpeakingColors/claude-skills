@@ -1,0 +1,13 @@
+name: Validate skills
+on:
+  push:
+    paths: ["skills/**", "scripts/**", "install.sh", "uninstall.sh", ".github/workflows/**"]
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/validate.py
+      - run: bash -n install.sh && bash -n uninstall.sh
+      - run: python3 scripts/build.py && ls -l dist

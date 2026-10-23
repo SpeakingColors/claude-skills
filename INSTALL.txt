@@ -1,0 +1,23 @@
+Installing these skills
+=======================
+
+A. Claude (claude.ai / desktop app): one skill at a time
+  1. Download the zip for ONE skill, for example reaper.zip.
+  2. In Claude: Customize > Skills > upload the zip.
+  3. Switch the skill on. Code execution must be enabled for skills.
+  The zip has the skill folder at its root, as the Claude help article requires.
+
+B. Claude Code (terminal): all skills or a few
+  1. Unzip all-skills.zip.
+  2. In the unzipped folder run:   ./install.sh            (everything)
+                           or:   ./install.sh reaper ardour   (just these)
+     List them with:             ./install.sh --list
+  3. Start a new Claude Code session.
+  Skills go to ~/.claude/skills/<name>/SKILL.md. Old copies are moved to
+  <name>.bak-<date>, never deleted. Remove with ./uninstall.sh <name> or --all.
+
+C. By hand
+  Copy a folder from skills/ into ~/.claude/skills/ (personal) or
+  <your project>/.claude/skills/ (one project).
+
+Check the download: sha256sum -c SHA256SUMS

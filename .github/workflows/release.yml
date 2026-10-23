@@ -1,0 +1,31 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v1.0.0"
+        required: true
+      prerelease:
+        description: "Mark as test build"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/validate.py
+      - run: python3 scripts/build.py
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          PRE: ${{ inputs.prerelease }}
+        run: |
+          flags=""
+          [ "$PRE" = "true" ] && flags="--prerelease"
+          gh release create "$TAG" dist/* $flags --target "$GITHUB_SHA" \
+            --title "Skills $TAG" \
+            --notes "Download one skill zip (for claude.ai: Customize > Skills > upload) or all-skills.zip (for Claude Code, run install.sh). Verify with SHA256SUMS. See INSTALL.txt inside all-skills.zip."

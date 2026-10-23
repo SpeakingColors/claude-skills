@@ -1,6 +1,6 @@
 ---
 name: hardware-protocol-capture
-description: "Use when documenting how a music hardware device is controlled over MIDI (CC, NRPN, SysEx) or USB so a controller, editor or librarian can be built: finding official docs, capturing traffic from the user's own device, decoding patch dumps, and writing a verified MIDI implementation document."
+description: Use when documenting how a music hardware device is controlled over MIDI (CC, NRPN, SysEx) or USB so a controller, editor or librarian can be built, from official docs and own-device captures.
 ---
 
 # Hardware protocol capture

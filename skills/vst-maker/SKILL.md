@@ -1,6 +1,6 @@
 ---
 name: vst-maker
-description: Use when designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controller plugins) in C++/JUCE for VST3 on Linux, macOS and Windows. Covers realtime safety, parameters, CPU/RAM/GPU/latency, sound quality, instrument, filter, FX and preset design, UI standards, offline installers and manuals, signing, testing and security.
+description: Use when designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controllers) in C++/JUCE for VST3 on Linux, macOS and Windows, incl. realtime safety and installers.
 ---
 
 # VST Maker

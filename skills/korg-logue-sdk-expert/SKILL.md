@@ -1,6 +1,6 @@
 ---
 name: korg-logue-sdk-expert
-description: Use when writing, porting, debugging, building or loading custom oscillators, synths and effects (units) with the KORG logue SDK for minilogue xd, prologue, NTS-1 (mkI/mkII), NTS-3, drumlogue or microKORG2. Covers per-platform APIs, manifest/header files, Docker and manual builds, logue-cli, memory limits, realtime-safe DSP practice and Linux loading workarounds.
+description: Use when writing, porting, debugging, building or loading custom oscillators, synths and effects (units) with the KORG logue SDK for minilogue xd, prologue, NTS-1, NTS-3, drumlogue or microKORG2.
 ---
 
 # KORG logue SDK Expert

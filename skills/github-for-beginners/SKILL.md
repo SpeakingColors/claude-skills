@@ -1,6 +1,6 @@
 ---
 name: github-for-beginners
-description: Use when the user is new to GitHub or does not want to learn it and needs to publish files, create a repository, upload a folder, make a release with downloads, choose a licence, or remove private information from a public repo. Guides one click at a time and keeps private data out of public history.
+description: Use when the user is new to GitHub and needs to publish files, create a repository, upload a folder, make a release with downloads, choose a licence or remove private info from a public repo.
 ---
 
 # GitHub for beginners

@@ -1,7 +1,7 @@
 # claude-skills
 
 Free Claude skills for music makers, DJs and Linux users. One folder per skill under `skills/`.
-50 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
+51 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
 
 ## Skills
 
@@ -57,6 +57,7 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | Skill | What it does |
 |---|---|
 | [dj-specialist](skills/dj-specialist/SKILL.md) | Advising a DJ on software, libraries, sets, gigs or hearing care, incl. the DDJ-FLX4, Rekordbox/Traktor on Linux, Mixxx and Engine DJ. |
+| [dj-gig-guide](skills/dj-gig-guide/SKILL.md) | Helping a DJ with gear, gigs, rider and contract basics, venue tricks and tips by country, travel with gear, hearing health and gig checklists; every claim is labelled by evidence level. |
 | [denon-prime-sc5000-x1800](skills/denon-prime-sc5000-x1800/SKILL.md) | Troubleshooting or updating Denon DJ SC5000 Prime players and the X1800 Prime mixer, covering hum or noise, controller (HID) mode, firmware and Engine DJ library prep. |
 
 ### Linux and devices

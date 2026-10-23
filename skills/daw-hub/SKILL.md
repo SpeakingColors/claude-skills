@@ -62,6 +62,8 @@ Music craft (app independent)
 - vst-maker: building your own plugins (design, sound quality, release).
 - juce-expert: JUCE specifics (CMake, realtime, parameters, testing, licence).
 - plugin-dsp-quality: aliasing, oversampling, level matching, responsiveness.
+- synth-engine-design: synth engines, filters, mod matrix, presets.
+- fx-plugin-design: effects, analysers, meters, tests.
 - plugin-ship-checklist: pre-release checks, installers, releases.
 - mockup-is-the-plugin: port an approved UI mockup faithfully.
 - hard-dance-production: mix, master and synth recipes for hardstyle, hardcore, trance.

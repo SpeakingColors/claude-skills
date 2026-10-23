@@ -65,6 +65,27 @@ Companion to `vst-maker`, `juce-expert` and `mockup-is-the-plugin`. Each item is
 - Include an Interface tour: a full-window screenshot with numbered control badges and lettered display badges, a one-line signal flow, one page per panel (crop, what each display shows with axes and colours, a numbered table of every control with range, default and tooltip text), and an "under the hood" page.
 - Build it from data: screenshot the real editor with a headless browser, read tooltips from the page's `data-tip` attributes, write JSON, then let a script build the pages. Replace test-page screenshots with the compiled editor's screenshots when available.
 
+## 9b. More JUCE and build gotchas (COMMUNITY, from real builds)
+- Newer JUCE versions remove old APIs. Example: `juce::Font::getStringWidthFloat` was removed; use `juce::GlyphArrangement::getStringWidth(font, text)`. Read the BREAKING_CHANGES file of the JUCE version you update to, and build in CI against the new version before releasing a security update.
+- `juce::Label` constructed with one string sets the component name, not the shown text, so labels can appear blank. Use `setText`.
+- Local JUCE configure without X11 development headers or ALSA: pass compile definitions such as `-DJUCE_USE_XRANDR=0 -DJUCE_USE_XINERAMA=0 -DJUCE_USE_XCURSOR=0 -DJUCE_USE_XRENDER=0 -DJUCE_USE_XSHM=0 -DJUCE_ALSA=0 -DJUCE_JACK=0`. UNVERIFIED for your setup; it only helps compile-checks.
+- A repo that builds two VST3 bundles (an instrument and an effect from one code base): stage every `*.vst3` with `find -print0` in the release workflow, and build both Flatpak targets.
+- Flatpak extension format (copied from a Flathub audio plugin manifest): runtime `org.freedesktop.LinuxAudio.BaseExtension`, prefix `/app/extensions/Plugins/<Name>`, VST3 in `<prefix>/vst3`. Plugin extensions must match the host's Freedesktop runtime branch; check which branches exist (one project found 24.08 and 23.08 had no LinuxAudio base on Flathub and used 25.08). Re-check.
+- Flatpak hosts could not always read plugin files in `/usr/lib/vst3` or the home folder, or presets stored under `~/.local/share/<vendor>` (single-user reports, 2023 and 2024): embed factory presets and assets in the plugin (JUCE BinaryData) and test in a Flatpak host.
+- Release zips that cannot be downloaded in the CI sandbox cannot be inspected there: make the workflow itself check that each installer contains the `.vst3`.
+- Windows installers: an unsigned installer gets a strong SmartScreen block; signing options (Azure Artifact Signing, an OV certificate, SignPath Foundation for qualifying open source) change, so read the current Microsoft page. macOS: unsigned or ad-hoc signed packages trigger Gatekeeper; notarisation needs a Developer ID certificate, hardened runtime and `notarytool`. VERIFIED earlier from Microsoft and Apple docs; re-check prices and rules before quoting.
+- Per-repo hygiene: README screenshot of the real window, `docs/index.html` with manual, source and test links, and a "not affiliated with" line when you name a vendor's hardware or products. Enable GitHub Pages yourself if you want the docs page live.
+- Screenshot recipe: headless Chromium with `deviceScaleFactor` 1.5 to 2; hide tooltip overlays before shooting; for the real JUCE window build the Standalone target and run it under `xvfb-run`, wait a few seconds, capture the root window and crop. Do not use manual tour images as README shots (they carry numbered badges). Never commit a build symlink to a third-party JUCE tree.
+
+## 9c. Licensing of assets and ideas
+- Studying a commercial product's feature list, screenshots and manual is fine; copying its code, presets, samples, name, layout or look is not. Note "ideas only" in the notes.
+- Third-party waveform packs may be personal-use only even when free to download. Do not bundle or redistribute them. Generate your own waveforms, or let users load their own from a folder. The AKWF single-cycle waveforms are described by their author as CC0; confirm at the original source before bundling. UNVERIFIED here.
+- JUCE projects: AGPLv3 unless you hold a commercial JUCE licence. Say which one applies in the README (see `juce-expert` section 1).
+
+## 9d. Cross-instance features (analysers, linked EQs)
+- Sharing data between plugin instances in one host (shared memory or a process-wide singleton) is UNVERIFIED: some hosts run plugins in separate processes or sandboxes. Test in every host you claim to support before promising it. Report latency differences between tracks when comparing them.
+- A plugin can only analyse what the host sends it; it cannot capture other applications' audio.
+
 ## 9. Final gate (tick all)
 - [ ] Old-state fixture loads; version number stored.
 - [ ] Real editor snapshot compared with the mockup.

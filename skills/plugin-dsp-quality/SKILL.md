@@ -71,6 +71,26 @@ Labels: VERIFIED (read on a source page), MEASURED (our own harness result, re-c
 ## 9. Prototype fast, then port
 - A browser lab (Web Audio) is a quick way to let the owner listen and A/B before installing. Keep the DSP in a small portable core with shared constants so the lab and the C++ plugin match, and write a test that compares their output levels.
 
+## 10. Limiters, ceilings and loudness (measured and read in source)
+- `juce::dsp::Limiter` is not a ceiling limiter. Its header says "two compressors and a hard clipper at 0 dB". The threshold is set only on the second compressor; the output gain then includes `dB2gain(-threshold)` plus a fixed makeup of about 3.7 dB (VERIFIED, JUCE source juce_Limiter.cpp and .h, read 2026-10-23). The shown code has no lookahead and reports no latency. So lowering the "ceiling" makes the output LOUDER and then hard-clips at 0 dB. In a lab test on a full mix, a -6 dB setting clipped about 14% of samples, and the peak always landed at 0 dBFS (MEASURED, on a lab port of the same maths).
+- If you need a true ceiling, write a lookahead brick-wall limiter: about 1.5 ms lookahead, boxcar-smoothed attack, one-pole release (about 80 ms worked), and delay the dry path by the lookahead. At 44.1 kHz that is about 66 samples of latency; report it with `setLatencySamples`. Output must never exceed the ceiling (tested exact at -0.3, -3, -6 and -12 dB). It is sample-peak only; true-peak needs a 4x check. MEASURED.
+- Use JUCE's limiter only as a safety net, not as a mastering ceiling.
+- A maximizer did not get louder at equal peak until a light peak clipper was added. Shipped chain without clipper: about 0 LU gain; with a clipper and push: about +4 to +8 LU, crest falling to 3 to 4 dB. The clipper delivers loudness. MEASURED. Put the clipper before the limiter (post position recommended), smooth knee, oversampled.
+- Squeeze or upward-compression styles can lose 7 to 17 dB LUFS without makeup (band gain reduction averaging about -20 dB). Fix: closed-loop slow RMS follower (about 250 ms power window, attack 50 ms, release 400 ms) before clip and limiter, target = input RMS plus a few dB, upward-only gain. Sparse bass-heavy material still ends up near -1 LU at equal peak because the kick is already near full scale. MEASURED.
+- A fixed "contour" low shelf (for example 70 Hz) also lifts DC and infrasound; contour 8 raised DC about 4x. Add an always-on 20 Hz high-pass. MEASURED.
+- An "air" control that is a tanh of a high-passed band mixed at about 12% is barely audible. A smooth high shelf (about 9 kHz, up to +4.5 dB) plus an oversampled exciter reads better. Judge by ear. COMMUNITY.
+- An unclamped "process" or high-band lift can add up to +70 dB of gain when the mids are quiet; clamp it and check for noise pumping.
+- Nasty ranges (drive to 300%, push to 36 dB) need 4x or 8x oversampling; at 2x one fuzz setting measured about -13 dB alias at 8 kHz. Offer an HQ switch if CPU is a worry. MEASURED.
+- When 0% and 100% mix should read the same dB, report loudness (LUFS, K-weighted, ungated is fine for a lab) and "LU gained at equal peak" so makeup is not mistaken for quality.
+
+## 11. Other effect lessons
+- Spectral (STFT) sidechain ducker: amount 0 must reconstruct the input bit-exactly (tested about -150 dB). Blending a broadband pump with the spectral carve gives audible attack and release. A coloured sidechain widens the cut (about -3 LU), so level-match with a closed-loop RMS gain and test a "colour only what was not ducked" mode.
+- Bipolar dynamics knob (negative evens out, positive expands) with exactly 0 = off is clearer than a ratio knob. Document the harmonic-versus-level slope you measure.
+- Reverb size maps to decay time nonlinearly; measure it with an impulse (one engine: size 0.2 gave 0.7 s, 0.6 gave 1.4 s, 0.8 gave 2.2 s, 1.0 gave 6.4 s). Do not promise long tails (8 s) until you measure them. MEASURED.
+- Reverb reference settings read off a commercial plugin's screen (decay 2.41 s, damping at 3.5 kHz with strong high shelf cut, bass multiplier 1.25x at 700 Hz, mod 1 Hz at 38%, early diffusion 96%, late 100%, high cut 7.5 kHz, pre-delay 10 ms) are a design target, not a clone. What the controls mean exactly is UNVERIFIED until you read the vendor manual.
+- Dynamic EQ with per-band saturation: oversample the saturation, and keep the detector separate from the audio path.
+- Every effect in a chain that can lose level needs a level check on at least four material types (see section 5).
+
 ## Not verified / next reading
 - Parker, Esqueda, Bilbao (DAFx 2016) on continuous-time convolution, Esqueda et al. (2017), Chowdhury's ADAA notebook: found by search, not read here. Zavalishin, "The Art of VA Filter Design": cited in `vst-maker`, not re-read here.
 - Real compiled-plugin alias measurements and the JUCE oversampler's exact response: UNVERIFIED, measure in CI.

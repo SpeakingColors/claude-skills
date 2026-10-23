@@ -8,7 +8,7 @@ skills = repo / "skills"
 GROUPS = [
  ("DAWs and hub", ["daw-hub","bitwig-studio","reaper","ardour","waveform","ableton-live","fl-studio","cubase","studio-one-fender-studio-pro","logic-pro","pro-tools"]),
  ("Audio editors, Max for Live and Push", ["wavelab","sound-forge","audacity","max-for-live-expert","ableton-push-expert"]),
- ("Making plugins and hardware tools", ["vst-maker","juce-expert","mockup-is-the-plugin","korg-logue-sdk-expert","hardware-protocol-capture","github-for-beginners"]),
+ ("Making plugins and hardware tools", ["vst-maker","juce-expert","plugin-dsp-quality","plugin-ship-checklist","mockup-is-the-plugin","korg-logue-sdk-expert","hardware-protocol-capture","github-for-beginners"]),
  ("Studio, audio on Linux and sound", ["linux-audio-production","audio-driver-stacks","audio-interface-digital-io","wine-proton-bottles","sound-engineer-acoustics","electronic-music-producer","hard-dance-production","av-receiver-specialist"]),
  ("DJ", ["dj-specialist","dj-gig-guide","denon-prime-sc5000-x1800"]),
  ("Linux and devices", ["bazzite-kde-linux","linux-expert","linux-terminal-expert","man-page-expert","linux-security-hardening","couch-pc-cec-gaming-mode","rog-ally-x-bazzite","knulli-handhelds-m8","arduino-electronics-soldering","grapheneos"]),

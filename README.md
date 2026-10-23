@@ -1,7 +1,7 @@
 # claude-skills
 
 Free Claude skills for music makers, DJs and Linux users. One folder per skill under `skills/`.
-54 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
+56 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
 
 ## Skills
 
@@ -37,6 +37,8 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 |---|---|
 | [vst-maker](skills/vst-maker/SKILL.md) | Designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controllers) in C++/JUCE for VST3 on Linux, macOS and Windows, incl. realtime safety and installers. |
 | [juce-expert](skills/juce-expert/SKILL.md) | Developing JUCE audio plugins (VST3, AU, CLAP), covering CMake, realtime safety, quality and CPU, parameters, state, GUI incl. Visage, testing and licensing. |
+| [plugin-dsp-quality](skills/plugin-dsp-quality/SKILL.md) | A synth or effect plugin must sound smooth, clean and loud without harshness: aliasing audits, oversampling and ADAA, level-matched drive, output stages, responsiveness, synth design lessons. |
+| [plugin-ship-checklist](skills/plugin-ship-checklist/SKILL.md) | Use before releasing a plugin or app: old saves keep loading, the real editor matches the mockup, resizing, easy installs and updates, release workflow, manuals, and host gotchas. |
 | [mockup-is-the-plugin](skills/mockup-is-the-plugin/SKILL.md) | A plugin or app has an approved mockup and a real editor is being built, shown or released: the mockup and the product are one design, port it faithfully and test the backend separately. |
 | [korg-logue-sdk-expert](skills/korg-logue-sdk-expert/SKILL.md) | Writing, porting, debugging, building or loading custom oscillators, synths and effects (units) with the KORG logue SDK for minilogue xd, prologue, NTS-1, NTS-3, drumlogue or microKORG2. |
 | [hardware-protocol-capture](skills/hardware-protocol-capture/SKILL.md) | Documenting how a music hardware device is controlled over MIDI (CC, NRPN, SysEx) or USB so a controller, editor or librarian can be built, from official docs and own-device captures. |

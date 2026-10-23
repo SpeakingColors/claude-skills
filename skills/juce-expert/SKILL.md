@@ -300,7 +300,7 @@ All items in this section are UNVERIFIED unless a source is given; the Apple pag
 - Debugging tips (UNVERIFIED but standard): Debug build of the Standalone with a debugger; `jassert` for assumptions; do not use `DBG` in `processBlock`; reproduce host bugs with the smallest project.
 
 ## 13b. Quality and performance checklist (JUCE plugins)
-Short list; the long version with sources is in `vst-maker` (sections 2, 4, 6, 12). Load both.
+Short list; the long version with sources is in `vst-maker` (sections 2, 4, 6, 12), `plugin-dsp-quality` and `plugin-ship-checklist`. Load them together.
 - Sound: oversample or band-limit every non-linear stage and oscillator (see section 8), smooth every parameter, check for DC, NaN and clipping, test at 44.1, 48, 96 and 192 kHz.
 - CPU: no allocation, locks or file access in `processBlock` (section 5); precompute coefficients when a parameter changes, not per sample; use `ScopedNoDenormals`; measure with an offline render, not by feel.
 - Latency: report every delay with `setLatencySamples` and check in two hosts.

@@ -61,6 +61,8 @@ Music craft (app independent)
 - wine-proton-bottles: Bottles, runners, wineasio, yabridge, backups.
 - vst-maker: building your own plugins (design, sound quality, release).
 - juce-expert: JUCE specifics (CMake, realtime, parameters, testing, licence).
+- plugin-dsp-quality: aliasing, oversampling, level matching, responsiveness.
+- plugin-ship-checklist: pre-release checks, installers, releases.
 - mockup-is-the-plugin: port an approved UI mockup faithfully.
 - hard-dance-production: mix, master and synth recipes for hardstyle, hardcore, trance.
 

@@ -6,7 +6,7 @@
 <p align="center"><img src="docs/cover.png" width="900" alt="claude-skills"></p>
 
 Free Claude skills for music makers, DJs and Linux users. One folder per skill under `skills/`.
-58 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
+70 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
 
 ## Skills
 
@@ -43,6 +43,16 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | [vst-maker](skills/vst-maker/SKILL.md) | Designing, writing, reviewing, packaging or releasing audio plugins (synths, effects, MIDI controllers) in C++/JUCE for VST3 on Linux, macOS and Windows, incl. realtime safety and installers. |
 | [juce-expert](skills/juce-expert/SKILL.md) | Developing JUCE audio plugins (VST3, AU, CLAP), covering CMake, realtime safety, quality and CPU, parameters, state, GUI incl. Visage, testing and licensing. |
 | [plugin-dsp-quality](skills/plugin-dsp-quality/SKILL.md) | A synth or effect plugin must sound smooth, clean and loud without harshness: aliasing audits, oversampling and ADAA, level-matched drive, output stages, responsiveness, synth design lessons. |
+| [dsp-references-and-licences](skills/dsp-references-and-licences/SKILL.md) | Designing audio DSP and choosing papers, code to study and licences: oscillators, supersaw, filters, ADAA, true-peak, reverb, pitch shifting, stereo widening, and what you may copy. |
+| [plugin-performance-profiling](skills/plugin-performance-profiling/SKILL.md) | A plugin uses too much CPU or RAM: denormal and idle tests, RTSan, SIMD and oversampling costs, FFT library choice, GUI repaint cost, profilers per OS, pluginval, what to measure first. |
+| [plugin-security-fuzzing](skills/plugin-security-fuzzing/SKILL.md) | Auditing or hardening an audio plugin: hostile preset and file input, libFuzzer on setStateInformation, sanitizer CI, decoder CVEs, host sandboxing facts, hardening flags, signing. |
+| [plugin-fleet-audit](skills/plugin-fleet-audit/SKILL.md) | Use to audit many plugin repos at once: clone shallow, scan for security and sound quality techniques, then read the code to confirm. Includes the false positives that fooled a first pass. |
+| [mockup-to-juce-layout](skills/mockup-to-juce-layout/SKILL.md) | An approved HTML mockup must become a native JUCE editor: extract positions, icons and tooltips from the DOM with Playwright, generate Layout.h and Icons.h, port, check by snapshot. |
+| [js-to-cpp-dsp-port](skills/js-to-cpp-dsp-port/SKILL.md) | DSP written in JavaScript (a mockup engine) must be ported to C++ with the same results: function by function, same test cases, rounding and FFT conventions, STFT, phase vocoder, undo steps. |
+| [juce-headless-test-snapshot](skills/juce-headless-test-snapshot/SKILL.md) | Use to test a JUCE plugin without a DAW or screen: console-app processor tests, parameter and thread gotchas, offscreen editor snapshot to PNG with xvfb, crash backtraces, CI steps. |
+| [juce-audio-thread-handoff](skills/juce-audio-thread-handoff/SKILL.md) | A JUCE plugin must record, play back edited audio or share big data with the audio thread without allocating or locking: FIFO to a worker, published snapshots, state flags. |
+| [gha-supply-chain-hardening](skills/gha-supply-chain-hardening/SKILL.md) | Use to harden GitHub Actions and CMake dependencies across many repos: pin actions to commit SHAs, default read-only token, pin FetchContent to commits, verify with scans, optional attestations. |
+| [github-repo-lockdown](skills/github-repo-lockdown/SKILL.md) | Public GitHub repos must be fork-only: strangers can read, fork and download releases but not push, open issues, comment or open PRs. gh commands, limits, renewal workflow, pitfalls. |
 | [synth-engine-design](skills/synth-engine-design/SKILL.md) | Designing a synth plugin engine: supersaw, hoover, acid 303, mono analog style, filters, mod matrix, FM/AM, unison, FX chain, presets and banks, voices and CPU, with measurable tests. |
 | [fx-plugin-design](skills/fx-plugin-design/SKILL.md) | Designing effect plugins: multiband compressors, EQs with dynamics and saturation, exciters, reverbs, spectral ducking, analysers, with UI, preset and test patterns. |
 | [plugin-ship-checklist](skills/plugin-ship-checklist/SKILL.md) | Use before releasing a plugin or app: old saves keep loading, the real editor matches the mockup, resizing, easy installs and updates, release workflow, manuals, and host gotchas. |
@@ -56,6 +66,8 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | Skill | What it does |
 |---|---|
 | [linux-audio-production](skills/linux-audio-production/SKILL.md) | Professional Linux audio setup and debugging on Bazzite or Fedora Atomic, covering PipeWire, WirePlumber, JACK, ALSA, realtime, interfaces, routing, xruns, plugin paths and yabridge. |
+| [hardstyle-sound-design-notes](skills/hardstyle-sound-design-notes/SKILL.md) | Hardstyle, rawstyle, hard techno, hardcore, rave and trance sound design: kick layers, pitch envelope, staged distortion, reverse bass, screeches, hoovers, stabs, arrangement, tempos. |
+| [loudness-and-lowend-delivery](skills/loudness-and-lowend-delivery/SKILL.md) | Mastering or checking hard dance for streaming and club: LUFS and true peak targets, clipper and limiter chain, mono bass, kick and bass phase, room acoustics basics, DJ mixing basics. |
 | [audio-driver-stacks](skills/audio-driver-stacks/SKILL.md) | Choosing or troubleshooting audio drivers across Windows (WASAPI, ASIO, FlexASIO), macOS (Core Audio) and Linux (PipeWire, JACK, ALSA), covering crackle, no device, latency and clocking. |
 | [audio-interface-digital-io](skills/audio-interface-digital-io/SKILL.md) | Advising on audio interfaces, digital I/O (ADAT, S/PDIF, MADI), clocking and mixers, incl. RME Digiface USB and Ferrofish Pulse 16, on Linux. |
 | [wine-proton-bottles](skills/wine-proton-bottles/SKILL.md) | Running Windows music software or games on Bazzite or Linux with Bottles, Wine, Proton or ProtonPlus, covering prefixes, runners, dependencies, wineasio, yabridge, crashes and backups. |

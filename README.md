@@ -6,7 +6,7 @@
 <p align="center"><img src="docs/cover.png" width="900" alt="claude-skills"></p>
 
 Free Claude skills for music makers, DJs and Linux users. One folder per skill under `skills/`.
-70 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
+71 skills. Every skill labels its claims: **VERIFIED** (read on a source page), **COMMUNITY** (forum or project report) or **UNVERIFIED** (not checked, test first). Prices and versions change, so check the vendor page before paying or installing.
 
 ## Skills
 
@@ -47,6 +47,7 @@ Free Claude skills for music makers, DJs and Linux users. One folder per skill u
 | [plugin-performance-profiling](skills/plugin-performance-profiling/SKILL.md) | A plugin uses too much CPU or RAM: denormal and idle tests, RTSan, SIMD and oversampling costs, FFT library choice, GUI repaint cost, profilers per OS, pluginval, what to measure first. |
 | [plugin-security-fuzzing](skills/plugin-security-fuzzing/SKILL.md) | Auditing or hardening an audio plugin: hostile preset and file input, libFuzzer on setStateInformation, sanitizer CI, decoder CVEs, host sandboxing facts, hardening flags, signing. |
 | [plugin-fleet-audit](skills/plugin-fleet-audit/SKILL.md) | Use to audit many plugin repos at once: clone shallow, scan for security and sound quality techniques, then read the code to confirm. Includes the false positives that fooled a first pass. |
+| [plugin-aliasing-measurement](skills/plugin-aliasing-measurement/SKILL.md) | Use to measure how much a distortion effect aliases from outside the plugin: two sample rates, sines that avoid integer ratios, why a one rate non-harmonic count fails, self test, CI report. |
 | [mockup-to-juce-layout](skills/mockup-to-juce-layout/SKILL.md) | An approved HTML mockup must become a native JUCE editor: extract positions, icons and tooltips from the DOM with Playwright, generate Layout.h and Icons.h, port, check by snapshot. |
 | [js-to-cpp-dsp-port](skills/js-to-cpp-dsp-port/SKILL.md) | DSP written in JavaScript (a mockup engine) must be ported to C++ with the same results: function by function, same test cases, rounding and FFT conventions, STFT, phase vocoder, undo steps. |
 | [juce-headless-test-snapshot](skills/juce-headless-test-snapshot/SKILL.md) | Use to test a JUCE plugin without a DAW or screen: console-app processor tests, parameter and thread gotchas, offscreen editor snapshot to PNG with xvfb, crash backtraces, CI steps. |
